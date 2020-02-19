@@ -19,14 +19,28 @@ public class Test {
     return true;
   }
 
-  public static void main(String[] args) {
-    int[] array = new int[350_000];
+  private static MergeSort mergeSort = new MergeSort();
+  private static ParallelMergeSort parallelMergeSort = new ParallelMergeSort(mergeSort);
+  static void benchmark(int size) {
+    System.out.printf("=== size: %d ===\n", size);
+    int[] array = new int[size];
     var rand = new java.util.Random();
     for (int i = 0; i < array.length; i += 1) {
       array[i] = rand.nextInt();
     }
 
-    MergeSort mergeSort = new MergeSort();
+    var cocktailShakerSort = new CocktailShakerSort();
+    System.out.print("cocktail-shaker = ");
+    double T_cocktailShakerSort = BenchmarkTools.stopwatch(() -> {
+      return array.clone();
+    }, (_array) -> {
+      return cocktailShakerSort.sort(_array);
+    }, (_array) -> {
+      assert isSorted(_array);
+    });
+    System.out.printf("%f\n", T_cocktailShakerSort);
+
+    System.out.print("merge = ");
     double T_mergeSort = BenchmarkTools.stopwatch(() -> {
       return array.clone();
     }, (_array) -> {
@@ -34,8 +48,9 @@ public class Test {
     }, (_array) -> {
       assert isSorted(_array);
     });
+    System.out.printf("%f\n", T_mergeSort);
 
-    ParallelMergeSort parallelMergeSort = new ParallelMergeSort(mergeSort);
+    System.out.print("merge-parallel = ");
     int[] parallelSortWorking = array.clone();
     double T_parallelSort = BenchmarkTools.stopwatch(() -> {
       return array.clone();
@@ -44,9 +59,14 @@ public class Test {
     }, (_array) -> {
       assert isSorted(_array);
     });
+    System.out.printf("%f\n", T_parallelSort);
+  }
 
-    System.out.printf("T(merge) = %f s\n", T_mergeSort);
-    System.out.printf("T(parallel-merge) = %f s\n", T_parallelSort);
+  public static void main(String[] args) {
+    benchmark(12);
+    benchmark(1000);
+    benchmark(100000);
+    benchmark(1000000);
 
     parallelMergeSort.quit();
   }

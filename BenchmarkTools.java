@@ -16,14 +16,19 @@ abstract class BenchmarkTools {
     VoidInvokable<T> teardown
   ) {
     double sum = 0;
-    for (int i = 0; i < INVOKATION_COUNT; i += 1) {
+    int i;
+    for (i = 0; i < INVOKATION_COUNT; i += 1) {
       T value = init.invoke();
       long start = System.nanoTime();
       value = benchmark.invoke(value);
       long end = System.nanoTime();
       teardown.invoke(value);
       sum += (end - start) / 1e9d;
+
+      if (sum > 30) {
+        break;
+      }
     }
-    return sum / INVOKATION_COUNT;
+    return sum / (i + 1);
   }
 }
