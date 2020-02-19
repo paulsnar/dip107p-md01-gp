@@ -7,6 +7,9 @@ class CocktailShakerSort implements Sorter {
 
   public int[] sort(int[] array) {
     int bottom = 0, top = array.length;
+    if (top - bottom == 1) {
+      return array;
+    }
     while (bottom < top) {
       int max = array[bottom], maxI = bottom;
       for (int i = bottom + 1; i < top; i += 1) {
