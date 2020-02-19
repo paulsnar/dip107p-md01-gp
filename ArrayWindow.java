@@ -97,6 +97,15 @@ class ArrayWindow {
     return new Iterator();
   }
 
+  @Override
+  public ArrayWindow clone() {
+    int[] copy = new int[size()];
+    for (int i = start, ic = 0; i < end; i += 1, ic += 1) {
+      copy[ic] = array[i];
+    }
+    return new ArrayWindow(copy);
+  }
+
   void copyTo(ArrayWindow other) {
     int iThis = start, iOther = other.start;
     while (iThis < end && iOther < other.end) {
