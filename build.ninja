@@ -11,3 +11,4 @@ build ParallelMergeSort.class ParallelMergeSort$$WorkerThread.class: javac Paral
 build BenchmarkTools.class BenchmarkTools$$CreatorInvokable.class $
     BenchmarkTools$$PassthroughInvokable.class $
     BenchmarkTools$$VoidInvokable.class: javac BenchmarkTools.java
+build CocktailShakerSort.class: javac CocktailShakerSort.java
