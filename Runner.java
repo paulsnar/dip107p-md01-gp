@@ -39,9 +39,11 @@ public class Runner {
     ArrayWindow.Iterator iter = x.iterate();
     int prev = iter.next();
     while (iter.hasNext()) {
-      if (iter.next() < prev) {
+      int current = iter.next();
+      if (current < prev) {
         return false;
       }
+      prev = current;
     }
 
     return true;
