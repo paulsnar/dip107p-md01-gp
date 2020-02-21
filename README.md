@@ -9,6 +9,7 @@ Visi algoritmi veic kārtošanu pār veselo skaitļu masīvu, `int[]`. Realizēt
 algoritmi:
 
 - [Tiešās iekļaušanas metode][alg-insertion]
+- [Kvadrātsaknes metode][alg-sqrt]
 - [Šeikera metode][alg-shaker] daļēji pēc (Wirth, 1976)
 - [Apvienošanas metode][alg-merge] pēc (Wirth, 1976)
 - [Hoara metode][alg-quick]
@@ -18,6 +19,7 @@ algoritmi:
 
 [alg-insertion]: ./InsertionSort.java
 [alg-shaker]: ./CocktailShakerSort.java
+[alg-sqrt]: ./SquareRootSort.java
 [alg-merge]: ./MergeSort.java
 [alg-quick]: ./Quicksort.java
 [alg-parallel]: ./ParallelMergeSort.java
@@ -71,10 +73,10 @@ paralēlajiem.
 # Analīze
 
 Atbilstoši literatūrai, tika novērots, ka atsevišķas metodes (tiešās
-iekļaušanas, šeikera) darbojas ātrāk uz maziem masīviem, taču to veiktspēja
-strauji samazinās, pieaugot masīva izmēram; kā arī, ka citas metodes (Hoara,
-apvienošanas) maziem masīviem darbojas lēnāk, taču to veiktspējas samazināšanās
-pie ievaddatu apjoma pieauguma ir lēnāka.
+iekļaušanas, šeikera, kvadrātsaknes) darbojas ātrāk uz maziem masīviem, taču to
+veiktspēja strauji samazinās, pieaugot masīva izmēram; kā arī, ka citas metodes
+(Hoara, apvienošanas) maziem masīviem darbojas lēnāk, taču to veiktspējas
+samazināšanās pie ievaddatu apjoma pieauguma ir lēnāka.
 
 Līdzīgi, kārtošanas paralelizācija sniedz veiktspējas uzlabojumu, taču tai arī
 ir fiksēti virstēriņi, kā rezultātā nelielu masīvu kārtošana paralēli
