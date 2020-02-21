@@ -42,10 +42,12 @@ class ParallelMergeSort implements Sorter, AutoCloseable {
           break;
         }
 
-        lastSorted = sorter.sort(window);
-        if (doneSignal != null) {
-          doneSignal.countDown();
-          doneSignal = null;
+        synchronized (this) {
+          lastSorted = sorter.sort(window);
+          if (doneSignal != null) {
+            doneSignal.countDown();
+            doneSignal = null;
+          }
         }
       }
     }
@@ -61,8 +63,10 @@ class ParallelMergeSort implements Sorter, AutoCloseable {
     CountDownLatch latch = new CountDownLatch(BUCKETS);
     for (int i = 0; i < BUCKETS; i += 1) {
       WorkerThread thread = workers[i];
-      thread.doneSignal = latch;
-      thread.input.add(partitions[i]);
+      synchronized (thread) {
+        thread.doneSignal = latch;
+        thread.input.add(partitions[i]);
+      }
     }
 
     do {
