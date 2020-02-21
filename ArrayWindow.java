@@ -17,23 +17,26 @@ class ArrayWindow {
   }
 
   private int indexToAbsolute(int index) {
+    int size = end - start;
     if (index < 0) {
-      index += end;
-    } else {
-      index += start;
+      index += size;
     }
 
-    if (index >= end) {
+    if (index < 0 || index >= size) {
       throw new ArrayIndexOutOfBoundsException(
-        String.format("%d > %d", index, end));
+        String.format("Index %d out of bounds for window of size %d",
+          index, size));
     }
 
+    index += start;
     return index;
   }
 
   ArrayWindow slice(int start, int end) {
     start = indexToAbsolute(start);
     if (end == 0) {
+      end = this.end;
+    } else if (end == (this.end - this.start)) {
       end = this.end;
     } else {
       end = indexToAbsolute(end);
