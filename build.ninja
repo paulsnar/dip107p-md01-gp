@@ -9,7 +9,4 @@ build ArrayWindow.class ArrayWindow$$Iterator.class: javac ArrayWindow.java
 build InsertionSort.class: javac InsertionSort.java
 build Quicksort.class: javac Quicksort.java
 build ParallelMergeSort.class ParallelMergeSort$$WorkerThread.class: javac ParallelMergeSort.java
-build BenchmarkTools.class BenchmarkTools$$CreatorInvokable.class $
-    BenchmarkTools$$PassthroughInvokable.class $
-    BenchmarkTools$$VoidInvokable.class: javac BenchmarkTools.java
 build CocktailShakerSort.class: javac CocktailShakerSort.java
