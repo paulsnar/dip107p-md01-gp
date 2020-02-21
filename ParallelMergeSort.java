@@ -27,6 +27,7 @@ class ParallelMergeSort implements Sorter, AutoCloseable {
 
   private class WorkerThread extends Thread {
     BlockingQueue<ArrayWindow> input = new LinkedBlockingQueue<ArrayWindow>();
+    ArrayWindow lastSorted = null;
     CountDownLatch doneSignal = null;
 
     public void run() {
@@ -41,7 +42,7 @@ class ParallelMergeSort implements Sorter, AutoCloseable {
           break;
         }
 
-        sorter.sort(window);
+        lastSorted = sorter.sort(window);
         if (doneSignal != null) {
           doneSignal.countDown();
           doneSignal = null;
@@ -71,6 +72,11 @@ class ParallelMergeSort implements Sorter, AutoCloseable {
         continue;
       }
     } while (false);
+
+    for (int i = 0; i < BUCKETS; i += 1) {
+      partitions[i] = workers[i].lastSorted;
+    }
+
     ArrayWindow result = ArrayWindow.allocate(window.size());
     mergePartitionsInto(partitions, result);
     return result;
