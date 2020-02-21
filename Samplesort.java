@@ -61,19 +61,20 @@ class Samplesort implements Sorter, AutoCloseable {
     int[] tmp = new int[size];
 
     int[] pivots = new int[BUCKETS - 1];
-    for (int i = 0; i < BUCKETS - 1; i += 1) {
-      pivots[i] = window.get(random.nextInt(size));
-    }
-
     {
-      int top = pivots.length;
+      int[] samples = new int[4 * (BUCKETS - 1)];
+      for (int i = 0; i < samples.length; i += 1) {
+        samples[i] = window.get(random.nextInt(size));
+      }
+
+      int top = samples.length;
       for (;;) {
         boolean didSwap = false;
         for (int i = 1; i < top; i += 1) {
-          if (pivots[i - 1] > pivots[i]) {
-            int _tmp = pivots[i];
-            pivots[i] = pivots[i - 1];
-            pivots[i - 1] = _tmp;
+          if (samples[i - 1] > samples[i]) {
+            int _tmp = samples[i];
+            samples[i] = samples[i - 1];
+            samples[i - 1] = _tmp;
             didSwap = true;
           }
         }
@@ -81,6 +82,10 @@ class Samplesort implements Sorter, AutoCloseable {
           break;
         }
         top -= 1;
+      }
+
+      for (int i = 0; i < pivots.length; i += 1) {
+        pivots[i] = samples[4 * i];
       }
     }
 
