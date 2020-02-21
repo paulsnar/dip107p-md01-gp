@@ -3,8 +3,6 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Runner {
-  enum ArrayType { SORTED, RANDOM, ALMOST_SORTED, REVERSE }
-
   private static final int INVOCATION_COUNT = 100;
   private double benchmark(Sorter sorter, ArrayWindow window) {
     double timeSum = 0;
