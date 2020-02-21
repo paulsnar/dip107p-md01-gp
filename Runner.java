@@ -96,39 +96,113 @@ public class Runner {
     }
   }
 
-  private HashMap<Sorter, String> sorterNames;
+  private void printCsvHeader() {
+    System.out.println("method,size,result_sorted,result_random," +
+      "result_almost_sorted,result_reverse");
+  }
 
-  private int run(String[] args) {
+  private HashMap<Sorter, String> sorterNames;
+  private static final int[] ARRAY_SIZES =
+    {20, 100, 10_000, 100_000, 1_000_000};
+
+  private int runAll() {
     double[] results = new double[4];
     CocktailShakerSort cocktailShaker = new CocktailShakerSort();
     MergeSort merge = new MergeSort();
-    InsertionSort insertionSort = new InsertionSort();
-    Quicksort quickSort = new Quicksort();
-    ParallelMergeSort parallelShaker = new ParallelMergeSort(cocktailShaker);
+    InsertionSort insertion = new InsertionSort();
+    Quicksort quick = new Quicksort();
+    ParallelMergeSort parallelInsertion = new ParallelMergeSort(insertion);
     ParallelMergeSort parallelMerge = new ParallelMergeSort(merge);
-    
-    Sorter[] sorters = {cocktailShaker, merge, parallelShaker, parallelMerge,
-      insertionSort, quickSort};
+    Samplesort sampleInsertion = new Samplesort(insertion);
+    Samplesort sampleMerge = new Samplesort(merge);
+
+    Sorter[] sorters = {
+      cocktailShaker, insertion,
+      merge, quick,
+      parallelInsertion, parallelMerge,
+      sampleInsertion, sampleMerge
+    };
 
     sorterNames = new HashMap<>(3);
     sorterNames.put(cocktailShaker, "shaker");
+    sorterNames.put(insertion, "insertion");
     sorterNames.put(merge, "merge");
-    sorterNames.put(parallelShaker, "parallel_shaker");
+    sorterNames.put(quick, "quicksort");
+    sorterNames.put(parallelInsertion, "parallel_insertion");
     sorterNames.put(parallelMerge, "parallel_merge");
-    sorterNames.put(insertionSort, "insertion_sort");
-    sorterNames.put(quickSort, "quicksort");
+    sorterNames.put(sampleInsertion, "sample_insertion");
+    sorterNames.put(sampleMerge, "sample_merge");
 
-    // printCsvHeader();
-    System.out.println("method,size,result_sorted,result_random," +
-      "result_almost_sorted,result_reverse");
-    int[] sizes = {20, 100, 10_000, 100_000, 1_000_000};
-    for (int size : sizes) {
+    printCsvHeader();
+    for (int size : ARRAY_SIZES) {
       benchmarkArrays(sorters, size);
     }
+
+    for (Sorter sorter : sorters) {
+      if (sorter instanceof AutoCloseable) {
+        try {
+          ((AutoCloseable) sorter).close();
+        } catch (Exception exc) {
+          throw new RuntimeException("Closing sorter failed", exc);
+        }
+      }
+    }
+
+    return 0;
+  }
+
+  private Sorter instantiate(String sorterName) {
+    Class<? extends Sorter> sorterClass;
+    try {
+      sorterClass = Class.forName(sorterName).asSubclass(Sorter.class);
+    } catch (Exception exc) {
+      throw new RuntimeException(
+        String.format("%s is not a known sorter class.", sorterName), exc);
+    }
+
+    Sorter sorter;
+    try {
+      sorter = sorterClass.getDeclaredConstructor().newInstance();
+    } catch (Exception exc) {
+      throw new RuntimeException(
+        String.format(
+          "Could not instantiate %s (needs extra arguments?)", sorterName),
+        exc);
+    }
+
+    return sorter;
+  }
+  private int runSome(String[] sorterNames) {
+    Sorter[] sorters = new Sorter[sorterNames.length];
+    this.sorterNames = new HashMap<>(sorterNames.length);
+    for (int i = 0; i < sorterNames.length; i += 1) {
+      String sorterName = sorterNames[i];
+      Sorter sorter = instantiate(sorterName);
+      sorters[i] = sorter;
+      this.sorterNames.put(sorter, sorterName);
+    }
+
+    printCsvHeader();
+    for (int size : ARRAY_SIZES) {
+      benchmarkArrays(sorters, size);
+    }
+
+    for (Sorter sorter : sorters) {
+      if (sorter instanceof AutoCloseable) {
+        try {
+          ((AutoCloseable) sorter).close();
+        } catch (Exception exc) {
+          throw new RuntimeException("Closing sorter failed", exc);
+        }
+      }
+    }
+
     return 0;
   }
 
   public static void main(String[] args) {
-    System.exit(new Runner().run(args));
+    Runner runner = new Runner();
+    int retcode = args.length == 0 ? runner.runAll() : runner.runSome(args);
+    System.exit(retcode);
   }
 }
