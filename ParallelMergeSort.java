@@ -80,16 +80,16 @@ class ParallelMergeSort implements Sorter, AutoCloseable {
       ArrayWindow[] partitions, ArrayWindow target) {
     int count = partitions.length;
 
-    Iterator[] iterators = new Iterator[count];
+    ArrayWindow.Iterator[] iterators = new ArrayWindow.Iterator[count];
     for (int i = 0; i < partitions.length; i += 1) {
       iterators[i] = partitions[i].iterate();
     }
 
-    int ptr = target.start;
+    int ptr = 0;
     for (;;) {
       int min = Integer.MAX_VALUE, minIndex = -1;
       for (int i = 0; i < count; i += 1) {
-        Iterator iterator = iterators[i];
+        ArrayWindow.Iterator iterator = iterators[i];
         if (iterator.hasNext()) {
           int val = iterator.peek();
           if (val < min || minIndex == -1) {
@@ -102,7 +102,7 @@ class ParallelMergeSort implements Sorter, AutoCloseable {
         break;
       }
 
-      target.array[ptr] = min;
+      target.set(ptr, min);
       iterators[minIndex].next();
       ptr += 1;
     }
