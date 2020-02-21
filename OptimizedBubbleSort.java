@@ -1,4 +1,4 @@
-class OptimizedBubbleSort implements Sorter {
+class OptimizedBubbleSort implements Sorter, QuadraticSort {
   private void swap(int[] input, int a, int b) {
     int x = input[a];
     input[a] = input[b];

@@ -11,4 +11,5 @@ build Quicksort.class: javac Quicksort.java
 build ParallelMergeSort.class ParallelMergeSort$$WorkerThread.class: javac ParallelMergeSort.java
 build CocktailShakerSort.class: javac CocktailShakerSort.java
 build Quicksort2.class: javac Quicksort2.java
-build Samplesort.class: javac Samplesort.java
+build Samplesort.class SampleSort$$WorkerThread.class: javac Samplesort.java
+build QuadraticSort.class: javac QuadraticSort.java

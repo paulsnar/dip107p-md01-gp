@@ -78,7 +78,7 @@ public class Runner {
 
     for (Sorter sorter : sorters) {
       String name = sorterNames.get(sorter);
-      if (name.equals("shaker") && size > 100_000) {
+      if (sorter instanceof QuadraticSort && size > 100_000) {
         // this becomes untenable :)
         continue;
       }

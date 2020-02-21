@@ -1,4 +1,4 @@
-public class InsertionSort implements Sorter{
+public class InsertionSort implements Sorter, QuadraticSort {
 	public int[] sort(int[] array){
 		int N = array.length;
 		

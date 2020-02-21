@@ -1,4 +1,4 @@
-class CocktailShakerSort implements Sorter {
+class CocktailShakerSort implements Sorter, QuadraticSort {
   private void swap(int[] array, int a, int b) {
     int tmp = array[a];
     array[a] = array[b];
