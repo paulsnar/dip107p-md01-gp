@@ -60,7 +60,7 @@ sistēmā pieejamo loģisko procesoru skaitu.
 iegūtie paraugi labāk atspoguļotu ievaddatu sadalījumu un apgabali būtu līdzīga
 izmēra.
 
-[alg-sample-oversampling]: ./SampleSort.java#L63-90
+[alg-sample-oversampling]: ./Samplesort.java#L63-L90
 
 Abas divas metodes uz katra kodola šķirošanu veic ar brīvi izvēlētu algoritmu no
 iepriekšminētajiem. Pētīšanā abas paralelizācijas metodes tika pārbaudītas ar
