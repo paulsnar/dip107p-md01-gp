@@ -10,3 +10,4 @@ build InsertionSort.class: javac InsertionSort.java
 build Quicksort.class: javac Quicksort.java
 build ParallelMergeSort.class ParallelMergeSort$$WorkerThread.class: javac ParallelMergeSort.java
 build CocktailShakerSort.class: javac CocktailShakerSort.java
+build Quicksort2.class: javac Quicksort2.java
