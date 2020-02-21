@@ -72,7 +72,39 @@ class ParallelMergeSort implements Sorter, AutoCloseable {
       }
     } while (false);
     ArrayWindow result = ArrayWindow.allocate(window.size());
-    ArrayWindow.mergePartitionsInto(partitions, result);
+    mergePartitionsInto(partitions, result);
     return result;
+  }
+
+  private static void mergePartitionsInto(
+      ArrayWindow[] partitions, ArrayWindow target) {
+    int count = partitions.length;
+
+    Iterator[] iterators = new Iterator[count];
+    for (int i = 0; i < partitions.length; i += 1) {
+      iterators[i] = partitions[i].iterate();
+    }
+
+    int ptr = target.start;
+    for (;;) {
+      int min = Integer.MAX_VALUE, minIndex = -1;
+      for (int i = 0; i < count; i += 1) {
+        Iterator iterator = iterators[i];
+        if (iterator.hasNext()) {
+          int val = iterator.peek();
+          if (val < min || minIndex == -1) {
+            min = val;
+            minIndex = i;
+          }
+        }
+      }
+      if (minIndex == -1) {
+        break;
+      }
+
+      target.array[ptr] = min;
+      iterators[minIndex].next();
+      ptr += 1;
+    }
   }
 }
