@@ -115,6 +115,9 @@ class ArrayWindow {
   }
 
   void copyTo(ArrayWindow other) {
+    if (this == other) {
+      return;
+    }
     int iThis = start, iOther = other.start;
     while (iThis < end && iOther < other.end) {
       other.array[iOther] = array[iThis];

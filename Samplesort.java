@@ -27,6 +27,7 @@ class Samplesort implements Sorter, AutoCloseable {
 
   private class WorkerThread extends Thread {
     BlockingQueue<ArrayWindow> input = new LinkedBlockingQueue<>();
+    ArrayWindow lastSorted = null;
     CountDownLatch doneSignal = null;
 
     public void run() {
@@ -41,7 +42,7 @@ class Samplesort implements Sorter, AutoCloseable {
           break;
         }
 
-        sorter.sort(window);
+        lastSorted = sorter.sort(window);
         if (doneSignal != null) {
           doneSignal.countDown();
           doneSignal = null;
@@ -61,7 +62,26 @@ class Samplesort implements Sorter, AutoCloseable {
 
     int[] pivots = new int[BUCKETS - 1];
     for (int i = 0; i < BUCKETS - 1; i += 1) {
-      pivots[i] = random.nextInt(size);
+      pivots[i] = window.get(random.nextInt(size));
+    }
+
+    {
+      int top = pivots.length;
+      for (;;) {
+        boolean didSwap = false;
+        for (int i = 1; i < top; i += 1) {
+          if (pivots[i - 1] > pivots[i]) {
+            int _tmp = pivots[i];
+            pivots[i] = pivots[i - 1];
+            pivots[i - 1] = _tmp;
+            didSwap = true;
+          }
+        }
+        if ( ! didSwap) {
+          break;
+        }
+        top -= 1;
+      }
     }
 
     int[] bucketSizes = new int[BUCKETS];
@@ -89,7 +109,11 @@ class Samplesort implements Sorter, AutoCloseable {
     ArrayWindow[] buckets = new ArrayWindow[BUCKETS];
     int top = 0;
     for (int i = 0; i < buckets.length; i += 1) {
-      buckets[i] = space.slice(top, top + bucketSizes[i]);
+      if (i == buckets.length - 1) {
+        buckets[i] = space.slice(top, 0);
+      } else {
+        buckets[i] = space.slice(top, top + bucketSizes[i]);
+      }
       top += bucketSizes[i];
     }
 
@@ -115,6 +139,9 @@ class Samplesort implements Sorter, AutoCloseable {
         continue;
       }
     } while (false);
+    for (int i = 0; i < BUCKETS; i += 1) {
+      workers[i].lastSorted.copyTo(buckets[i]);
+    }
     return space;
   }
 }
