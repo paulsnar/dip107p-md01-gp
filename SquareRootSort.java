@@ -1,4 +1,4 @@
-public class SquareRootSort implements Sorter {
+public class SquareRootSort implements Sorter, QuadraticSort {
 	public int[] sort(int []a){
 		int N = a.length;
 		int gCnt = (int)Math.ceil(Math.sqrt(N));
