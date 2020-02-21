@@ -1,6 +1,7 @@
 import java.util.Random;
 
 class RecursiveQuicksort implements Sorter {
+	private Random rand = new Random();
 	public int[] sort (int []array){
 		quickSort(array, 0, array.length-1);
 		return array;
@@ -33,7 +34,6 @@ class RecursiveQuicksort implements Sorter {
 		}
 	}
 	public int randomNumber(int min, int max){
-		Random rand = new Random();
 		return rand.nextInt(max+1-min)+min;
 	}
 	public ArrayWindow sort(ArrayWindow window) {

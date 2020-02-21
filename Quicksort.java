@@ -1,6 +1,7 @@
 import java.util.Random;
 
 public class Quicksort implements Sorter{
+	private Random rand = new Random();
 	public int[] sort(int[] array){
 		int N = array.length;
 		int prev = 0;
@@ -43,8 +44,7 @@ public class Quicksort implements Sorter{
 		} while(stackpos > 0);
 		return array;
 	}
-	public static int randomNum(int minvalue, int maxvalue){
-		Random rand = new Random();
+	public int randomNum(int minvalue, int maxvalue){
 		return rand.nextInt((maxvalue+1)-minvalue)+minvalue;
 	}
 	public ArrayWindow sort(ArrayWindow window) {
