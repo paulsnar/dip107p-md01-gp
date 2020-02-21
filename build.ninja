@@ -11,6 +11,7 @@ build MergeSort.class: javac MergeSort.java
 build ArrayWindow.class ArrayWindow$$Iterator.class: javac ArrayWindow.java
 build InsertionSort.class: javac InsertionSort.java
 build Quicksort.class: javac Quicksort.java
+build SquareRootSort.class: javac SquareRootSort.java
 build ParallelMergeSort.class ParallelMergeSort$$WorkerThread.class: javac ParallelMergeSort.java
 build CocktailShakerSort.class: javac CocktailShakerSort.java
 build Quicksort2.class: javac Quicksort2.java
