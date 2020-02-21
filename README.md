@@ -86,3 +86,12 @@ veiktspēju. Tā kā paraugi tiek izvēlēti nejauši no ievades datiem, pat pē
 normalizēšanas tie nereprezentē vienmērīgu datu sadalījumu, un tādēļ dalītie
 apgabali ir nevienmērīga izmēra, kā rezultātā darbs starp procesoriem tiek
 sadalīts nevienmērīgi. Paralēlā apvienošanas metode šajā ziņā darbojas labāk.
+
+# Licence
+
+[BSD 2 pantu](./LICENSE)
+
+# Atsauces
+
+WIRTH, Niklaus, 1976. _Algorithms + Data Structures = Programs._ Englewood
+Cliffs: Prentice-Hall. ISBN 0-13-022418-9.
