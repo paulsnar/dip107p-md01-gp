@@ -33,14 +33,19 @@ class ArrayWindow {
   }
 
   ArrayWindow slice(int start, int end) {
-    start = indexToAbsolute(start);
+    int size = this.end - this.start;
     if (end == 0) {
       end = this.end;
-    } else if (end == (this.end - this.start)) {
+    } else if (end == size) {
       end = this.end;
     } else {
       end = indexToAbsolute(end);
     }
+    if (start == size) {
+      return ArrayWindow.EMPTY;
+    }
+
+    start = indexToAbsolute(start);
     return new ArrayWindow(array, start, end);
   }
 
