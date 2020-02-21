@@ -1,5 +1,8 @@
 public class SquareRootSort implements Sorter, QuadraticSort {
 	public int[] sort(int []a){
+		if (a.length < 2) {
+			return a;
+		}
 		int N = a.length;
 		int gCnt = (int)Math.ceil(Math.sqrt(N));
 		int gLen = (int)Math.sqrt(N);

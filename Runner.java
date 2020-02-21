@@ -107,36 +107,30 @@ public class Runner {
 
   private int runAll() {
     double[] results = new double[4];
-    CocktailShakerSort cocktailShaker = new CocktailShakerSort();
+    SquareRootSort sqrt = new SquareRootSort();
     InsertionSort insertion = new InsertionSort();
-    SquareRootSort squareRoot = new SquareRootSort();
     MergeSort merge = new MergeSort();
-    Quicksort quick = new Quicksort();
     Quicksort2 quick2 = new Quicksort2();
-    RecursiveQuicksort recQuick = new RecursiveQuicksort();
-    ParallelMergeSort parallelInsertion = new ParallelMergeSort(insertion);
+    ParallelMergeSort parallelSqrt = new ParallelMergeSort(sqrt);
     ParallelMergeSort parallelMerge = new ParallelMergeSort(merge);
-    Samplesort sampleInsertion = new Samplesort(insertion);
+    Samplesort sampleSqrt = new Samplesort(sqrt);
     Samplesort sampleMerge = new Samplesort(merge);
 
     Sorter[] sorters = {
-      cocktailShaker, insertion, squareRoot,
-      merge, quick, quick2, recQuick,
-      parallelInsertion, parallelMerge,
-      sampleInsertion, sampleMerge
+      sqrt, insertion,
+      merge, quick2,
+      parallelSqrt, parallelMerge,
+      sampleSqrt, sampleMerge
     };
 
     sorterNames = new HashMap<>(3);
-    sorterNames.put(cocktailShaker, "shaker");
+    sorterNames.put(sqrt, "sqrt");
     sorterNames.put(insertion, "insertion");
     sorterNames.put(merge, "merge");
-    sorterNames.put(quick, "quicksort");
     sorterNames.put(quick2, "quicksort2");
-    sorterNames.put(recQuick, "recursive_quicksort");
-    sorterNames.put(squareRoot, "squareroot");
-    sorterNames.put(parallelInsertion, "parallel_insertion");
+    sorterNames.put(parallelSqrt, "parallel_sqrt");
     sorterNames.put(parallelMerge, "parallel_merge");
-    sorterNames.put(sampleInsertion, "sample_insertion");
+    sorterNames.put(sampleSqrt, "sample_sqrt");
     sorterNames.put(sampleMerge, "sample_merge");
 
     printCsvHeader();
