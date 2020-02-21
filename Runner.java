@@ -60,12 +60,13 @@ public class Runner {
     Arrays.parallelSort(sorted);
 
     int[] almostSorted = data.clone();
+    int sizeHalf = size / 2;
     for (int i = 0; i < size;) {
-      int swapWith = this.random.nextInt(size);
+      int swapWith = sizeHalf + this.random.nextInt(sizeHalf);
       int tmp = almostSorted[i];
       almostSorted[i] = almostSorted[swapWith];
       almostSorted[swapWith] = tmp;
-      i += this.random.nextInt(size - i + 1);
+      i += swapWith;
     }
 
     int[] reverse = sorted.clone();
