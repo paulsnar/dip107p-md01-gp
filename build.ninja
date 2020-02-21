@@ -6,7 +6,8 @@ build OptimizedBubbleSort.class: javac OptimizedBubbleSort.java
 build Runner.class: javac Runner.java
 build MergeSort.class: javac MergeSort.java
 build ArrayWindow.class ArrayWindow$$Iterator.class: javac ArrayWindow.java
-build Test.class: javac Test.java
+build InsertionSort.class: javac InsertionSort.java
+build Quicksort.class: javac Quicksort.java
 build ParallelMergeSort.class ParallelMergeSort$$WorkerThread.class: javac ParallelMergeSort.java
 build BenchmarkTools.class BenchmarkTools$$CreatorInvokable.class $
     BenchmarkTools$$PassthroughInvokable.class $

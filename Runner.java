@@ -103,15 +103,21 @@ public class Runner {
     double[] results = new double[4];
     CocktailShakerSort cocktailShaker = new CocktailShakerSort();
     MergeSort merge = new MergeSort();
+    InsertionSort insertionSort = new InsertionSort();
+    Quicksort quickSort = new Quicksort();
     ParallelMergeSort parallelShaker = new ParallelMergeSort(cocktailShaker);
     ParallelMergeSort parallelMerge = new ParallelMergeSort(merge);
-    Sorter[] sorters = {cocktailShaker, merge, parallelShaker, parallelMerge};
+    
+    Sorter[] sorters = {cocktailShaker, merge, parallelShaker, parallelMerge,
+      insertionSort, quickSort};
 
     sorterNames = new HashMap<>(3);
     sorterNames.put(cocktailShaker, "shaker");
     sorterNames.put(merge, "merge");
     sorterNames.put(parallelShaker, "parallel_shaker");
     sorterNames.put(parallelMerge, "parallel_merge");
+    sorterNames.put(insertionSort, "insertion_sort");
+    sorterNames.put(quickSort, "quicksort");
 
     // printCsvHeader();
     System.out.println("method,size,result_sorted,result_random," +
