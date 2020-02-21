@@ -2,7 +2,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
-class ParallelMergeSort implements Sorter {
+class ParallelMergeSort implements Sorter, AutoCloseable {
   private static final int BUCKETS = Runtime.getRuntime().availableProcessors();
 
   private Sorter sorter;
@@ -16,6 +16,12 @@ class ParallelMergeSort implements Sorter {
       WorkerThread thread = new WorkerThread();
       workers[i] = thread;
       thread.start();
+    }
+  }
+
+  public void close() {
+    for (WorkerThread thread : workers) {
+      thread.input.add(ArrayWindow.EMPTY);
     }
   }
 
@@ -68,11 +74,5 @@ class ParallelMergeSort implements Sorter {
     ArrayWindow result = ArrayWindow.allocate(window.size());
     ArrayWindow.mergePartitionsInto(partitions, result);
     return result;
-  }
-
-  void quit() {
-    for (WorkerThread thread : workers) {
-      thread.input.add(ArrayWindow.EMPTY);
-    }
   }
 }
