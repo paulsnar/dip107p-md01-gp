@@ -108,18 +108,19 @@ public class Runner {
   private int runAll() {
     double[] results = new double[4];
     CocktailShakerSort cocktailShaker = new CocktailShakerSort();
-    MergeSort merge = new MergeSort();
     InsertionSort insertion = new InsertionSort();
-    Quicksort quick = new Quicksort();
     SquareRootSort squareRoot = new SquareRootSort();
+    MergeSort merge = new MergeSort();
+    Quicksort quick = new Quicksort();
+    Quicksort2 quick2 = new Quicksort2();
     ParallelMergeSort parallelInsertion = new ParallelMergeSort(insertion);
     ParallelMergeSort parallelMerge = new ParallelMergeSort(merge);
     Samplesort sampleInsertion = new Samplesort(insertion);
     Samplesort sampleMerge = new Samplesort(merge);
 
     Sorter[] sorters = {
-      cocktailShaker, insertion,
-      merge, quick, squareRoot,
+      cocktailShaker, insertion, squareRoot,
+      merge, quick, quick2,
       parallelInsertion, parallelMerge,
       sampleInsertion, sampleMerge
     };
@@ -129,6 +130,7 @@ public class Runner {
     sorterNames.put(insertion, "insertion");
     sorterNames.put(merge, "merge");
     sorterNames.put(quick, "quicksort");
+    sorterNames.put(quick2, "quicksort2");
     sorterNames.put(squareRoot, "squareroot");
     sorterNames.put(parallelInsertion, "parallel_insertion");
     sorterNames.put(parallelMerge, "parallel_merge");

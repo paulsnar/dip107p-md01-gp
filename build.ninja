@@ -18,5 +18,5 @@ build Quicksort2.class: javac Quicksort2.java
 build Samplesort.class Samplesort$$WorkerThread.class: javac Samplesort.java
 build QuadraticSort.class: javac QuadraticSort.java
 
-build dip107p-md01-gp.jar: jar Sorter.class OptimizedBubbleSort.class Runner.class MergeSort.class ArrayWindow.class ArrayWindow$$Iterator.class InsertionSort.class Quicksort.class ParallelMergeSort.class ParallelMergeSort.class ParallelMergeSort$$WorkerThread.class CocktailShakerSort.class Quicksort2.class Samplesort.class Samplesort$$WorkerThread.class QuadraticSort.class
+build dip107p-md01-gp.jar: jar Sorter.class OptimizedBubbleSort.class Runner.class MergeSort.class ArrayWindow.class ArrayWindow$$Iterator.class InsertionSort.class Quicksort.class ParallelMergeSort.class ParallelMergeSort.class ParallelMergeSort$$WorkerThread.class CocktailShakerSort.class Quicksort2.class Samplesort.class Samplesort$$WorkerThread.class QuadraticSort.class SquareRootSort.class
   main = Runner
