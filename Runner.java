@@ -113,6 +113,7 @@ public class Runner {
     MergeSort merge = new MergeSort();
     Quicksort quick = new Quicksort();
     Quicksort2 quick2 = new Quicksort2();
+    RecursiveQuicksort recQuick = new RecursiveQuicksort();
     ParallelMergeSort parallelInsertion = new ParallelMergeSort(insertion);
     ParallelMergeSort parallelMerge = new ParallelMergeSort(merge);
     Samplesort sampleInsertion = new Samplesort(insertion);
@@ -120,7 +121,7 @@ public class Runner {
 
     Sorter[] sorters = {
       cocktailShaker, insertion, squareRoot,
-      merge, quick, quick2,
+      merge, quick, quick2, recQuick,
       parallelInsertion, parallelMerge,
       sampleInsertion, sampleMerge
     };
@@ -131,6 +132,7 @@ public class Runner {
     sorterNames.put(merge, "merge");
     sorterNames.put(quick, "quicksort");
     sorterNames.put(quick2, "quicksort2");
+    sorterNames.put(recQuick, "recursive_quicksort");
     sorterNames.put(squareRoot, "squareroot");
     sorterNames.put(parallelInsertion, "parallel_insertion");
     sorterNames.put(parallelMerge, "parallel_merge");
