@@ -1,7 +1,7 @@
 class MergeSort implements Sorter {
   private void sort(ArrayWindow window, ArrayWindow scratch) {
     int size = window.size();
-    if (size == 1) {
+    if (size < 2) {
       return;
     }
     int seam = size / 2;
