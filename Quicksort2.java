@@ -1,8 +1,5 @@
 import java.util.Random;
 
-/**
- * @author Pauls Nartišs
- */
 class Quicksort2 implements Sorter {
   public int[] sort(int[] array) {
     return sort(new ArrayWindow(array)).getArray();
