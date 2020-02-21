@@ -1,6 +1,9 @@
 rule javac
   command = javac $in
 
+rule jar
+  command = jar -c -f $out -e $main $in
+
 build Sorter.class: javac Sorter.java
 build OptimizedBubbleSort.class: javac OptimizedBubbleSort.java
 build Runner.class: javac Runner.java
@@ -11,5 +14,8 @@ build Quicksort.class: javac Quicksort.java
 build ParallelMergeSort.class ParallelMergeSort$$WorkerThread.class: javac ParallelMergeSort.java
 build CocktailShakerSort.class: javac CocktailShakerSort.java
 build Quicksort2.class: javac Quicksort2.java
-build Samplesort.class SampleSort$$WorkerThread.class: javac Samplesort.java
+build Samplesort.class Samplesort$$WorkerThread.class: javac Samplesort.java
 build QuadraticSort.class: javac QuadraticSort.java
+
+build dip107p-md01-gp.jar: jar Sorter.class OptimizedBubbleSort.class Runner.class MergeSort.class ArrayWindow.class ArrayWindow$$Iterator.class InsertionSort.class Quicksort.class ParallelMergeSort.class ParallelMergeSort.class ParallelMergeSort$$WorkerThread.class CocktailShakerSort.class Quicksort2.class Samplesort.class Samplesort$$WorkerThread.class QuadraticSort.class
+  main = Runner

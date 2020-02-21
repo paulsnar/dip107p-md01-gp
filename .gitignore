@@ -1,3 +1,4 @@
 .DS_Store
 .ninja_*
 *.class
+*.jar
