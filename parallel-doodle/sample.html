@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<style>
+  body {
+    background-color: #fff;
+  }
+</style>
+<svg xmlns="http://www.w3.org/2000/svg"></svg>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+  const SVG_VIEWBOX_WIDTH = 100,
+        SVG_VIEWBOX_HEIGHT = 50;
+
+  const VALUE_GROUPS = 8,
+        PIVOTS = VALUE_GROUPS - 1,
+        VALUE_COUNT = VALUE_GROUPS * 8;
+
+  const BAR_WIDTH = SVG_VIEWBOX_WIDTH / VALUE_COUNT;
+
+  const sleep = (time) => new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+  const awaitEvent = (node, eventName) => new Promise((resolve) => {
+    const listener = (event) => {
+      node.removeEventListener(eventName, listener);
+      resolve(event);
+    };
+    node.addEventListener(eventName, listener);
+  });
+
+  let values = [];
+  for (let i = 0; i < VALUE_COUNT; i += 1) {
+    values.push({
+      id: Math.random().toString(16).slice(3),
+      value: (i + 1) / VALUE_COUNT,
+    });
+  }
+  d3.shuffle(values);
+
+  const svg = d3.select('svg');
+  svg.attr('viewBox', `0 0 ${SVG_VIEWBOX_WIDTH} ${SVG_VIEWBOX_HEIGHT}`);
+
+  svg.selectAll('rect.item')
+    .data(values, item => item.id)
+    .enter().append('rect').classed('item', true)
+      .attr('width', BAR_WIDTH)
+      .attr('height', item => SVG_VIEWBOX_HEIGHT * item.value)
+      .attr('x', (_, i) => BAR_WIDTH * i)
+      .attr('y', item => SVG_VIEWBOX_HEIGHT * (1 - item.value))
+      .attr('fill', item => d3.hsl(300 - 300 * item.value, 1, 0.5));
+
+  let isPivot = d3.local();
+
+  awaitEvent(document.body, 'click')
+    .then(() => {
+      let pivots = values.slice();
+      d3.shuffle(pivots);
+      pivots = pivots.slice(0, PIVOTS).map(item => item.value);
+
+      return svg.selectAll('rect.item')
+        .filter(item => pivots.indexOf(item.value) !== -1)
+        .each(function(data) {
+          data.isPivot = true;
+        })
+        .transition().duration(500)
+          .attr('fill', d3.rgb(66, 66, 66))
+        .end();
+    })
+    .then(() => {
+      let t = svg.transition().duration(500);
+
+      let items = svg.selectAll('rect.item')
+        .sort((a, b) => {
+          if (a.isPivot) {
+            return -1;
+          } else if (b.isPivot) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
+
+      items.transition(t)
+          .attr('x', (_, i) => BAR_WIDTH * i);
+
+      items.filter(item => item.isPivot)
+        .sort((a, b) => a.value - b.value)
+        .transition(t)
+          .attr('x', (_, i) => BAR_WIDTH * i);
+
+      return t.end();
+    })
+    .then(() => awaitEvent(document.body, 'click'))
+    .then(() => {
+      let pivots = [], top;
+
+      svg.selectAll('rect.item')
+        .each(function(item, i) {
+          if (item.isPivot) {
+            pivots.push(top = {
+              el: this,
+              value: item.value,
+            });
+          }
+        });
+
+      pivots.sort((a, b) => a.value - b.value);
+
+      let i = svg.selectAll('rect.item').filter(item => item.isPivot).size();
+
+      const moveElement = () => {
+        let el = svg.selectAll('rect.item').filter((_, ii) => i == ii);
+
+        let value = el.datum().value;
+        el = el.node();
+        if (value > top.value) {
+          el.parentNode.insertBefore(el, top.el.nextSibling);
+        } else {
+          insertBefore: {
+            for (let i = pivots.length - 1; i >= 1; i -= 1) {
+              if (pivots[i - 1].value < value && value <= pivots[i].value) {
+                el.parentNode.insertBefore(el, pivots[i].el);
+                break insertBefore;
+              }
+            }
+            el.parentNode.insertBefore(el, pivots[0].el);
+          }
+        }
+
+        i += 1;
+
+        return svg.selectAll('rect.item')
+          .transition().duration(60)
+            .attr('x', (_, i) => BAR_WIDTH * i)
+          .end()
+          .then(() => sleep(40))
+          .then(() => {
+            if (i < values.length) {
+              return moveElement();
+            }
+          });
+      };
+      return moveElement();
+    })
+    .then(() => awaitEvent(document.body, 'click'))
+    .then(() => {
+      let group = [], groups = [];
+      svg.selectAll('rect.item')
+        .each(function(item) {
+          if (item.isPivot) {
+            groups.push(group);
+            group = [];
+          } else {
+            group.push(this);
+          }
+        });
+
+      groups.push(group);
+
+      for (let i = 0; i < groups.length; i += 1) {
+        d3.selectAll(groups[i])
+          .sort((a, b) => a.value - b.value)
+      }
+
+      return svg.selectAll('rect.item')
+        .transition().duration(750)
+          .attr('x', (_, i) => BAR_WIDTH * i)
+        .end();
+    })
+    .then(() =>
+      svg.selectAll('rect.item')
+        .filter(item => item.isPivot)
+        .each((item) => {
+          delete item.isPivot;
+        })
+        .transition().duration(500)
+          .attr('fill', item => d3.hsl(300 - 300 * item.value, 1, 0.5))
+        .end());
+</script>

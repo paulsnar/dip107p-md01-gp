@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<style>
+  body {
+    background-color: #fff;
+  }
+</style>
+<svg xmlns="http://www.w3.org/2000/svg"></svg>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+  const SVG_VIEWBOX_WIDTH = 100,
+        SVG_VIEWBOX_HEIGHT = 50;
+
+  const VALUE_GROUPS = 8,
+        VALUE_GROUP_SIZE = 8,
+        VALUE_COUNT = VALUE_GROUPS * VALUE_GROUP_SIZE;
+
+  const INTERGROUP_PADDING_BARS = 2;
+
+  const BAR_WIDTH_LARGE = SVG_VIEWBOX_WIDTH / VALUE_COUNT,
+        BAR_WIDTH_NARROW = SVG_VIEWBOX_WIDTH / (VALUE_COUNT + 2 * (VALUE_GROUPS - 1)),
+        INTERGROUP_PADDING = INTERGROUP_PADDING_BARS * BAR_WIDTH_NARROW,
+        GROUP_STRIDE_GAPLESS = BAR_WIDTH_LARGE * VALUE_GROUP_SIZE,
+        GROUP_STRIDE = BAR_WIDTH_NARROW * VALUE_GROUP_SIZE + INTERGROUP_PADDING;
+
+  const sleep = (time) => new Promise((resolve) => {
+    setTimeout(resolve, time);
+  });
+  const awaitEvent = (node, eventName) => new Promise((resolve) => {
+    const listener = (event) => {
+      node.removeEventListener(eventName, listener);
+      resolve(event);
+    };
+    node.addEventListener(eventName, listener);
+  });
+
+  let values = [];
+  for (let i = 0; i < VALUE_COUNT; i += 1) {
+    values.push({
+      id: Math.random().toString(16).slice(3),
+      value: (i + 1) / VALUE_COUNT,
+    });
+  }
+  d3.shuffle(values);
+  values = values.map((item, i) => {
+    item.index = i;
+    return item;
+  });
+  let groups = d3.nest()
+    .key(item => item.index / VALUE_GROUP_SIZE | 0)
+    .entries(values);
+
+  const svg = d3.select('svg');
+  svg.attr('viewBox', `0 0 ${SVG_VIEWBOX_WIDTH} ${SVG_VIEWBOX_HEIGHT}`);
+
+  svg.selectAll('g.window')
+    .data(groups)
+    .enter().append('g').attr('class', 'window')
+      .each(function(group, i) {
+        let base = GROUP_STRIDE_GAPLESS * i;
+        d3.select(this).selectAll('rect.item')
+          .data(group.values, item => item.id)
+          .enter().append('rect')
+            .attr('class', 'item')
+            .attr('width', BAR_WIDTH_LARGE)
+            .attr('height', item => SVG_VIEWBOX_HEIGHT * item.value)
+            .attr('x', (item, i) => base + BAR_WIDTH_LARGE * i)
+            .attr('y', item => SVG_VIEWBOX_HEIGHT * (1 - item.value))
+            .attr('fill', item => d3.hsl(300 - 300 * item.value, 1, 0.5));
+      });
+
+  awaitEvent(document.body, 'click')
+    .then(() => {
+      let t = svg.transition().duration(500);
+      svg.selectAll('g.window')
+        .each(function(group, i) {
+          let base = GROUP_STRIDE * i;
+          d3.select(this).selectAll('rect.item')
+            .transition(t)
+              .attr('x', (item, i) => base + BAR_WIDTH_NARROW * i)
+              .attr('width', BAR_WIDTH_NARROW);
+        });
+      return t.end();
+    })
+    .then(() => awaitEvent(document.body, 'click'))
+    .then(() => {
+      let t = svg.transition().duration(750);
+      svg.selectAll('g.window')
+        .each(function(group, i) {
+          group.values = group.values.sort((a, b) => a.value - b.value);
+          let base = GROUP_STRIDE * i;
+          d3.select(this).selectAll('rect.item')
+            .data(group.values, item => item.id)
+            .order()
+            .transition(t)
+              .attr('x', (item, i) => base + BAR_WIDTH_NARROW * i);
+        });
+      return t.end();
+    })
+    .then(() => awaitEvent(document.body, 'click'))
+    .then(() => {
+      let rootGroup = svg.append('g').attr('class', 'window--root');
+
+      const mergeElements = () => {
+        let min = null, minNode = null, minValue = Infinity;
+
+        svg.selectAll('g.window')
+          .selectAll('rect.item')
+          .each(function(data) {
+            if (minValue > data.value) {
+              minNode = this;
+              minValue = data.value;
+            }
+          });
+        d3.select(minNode.parentNode).each(function(group) {
+          for (let i = 0; i < group.values.length; i += 1) {
+            if (group.values[i].value === minValue) {
+              group.values.splice(i, 1);
+              return;
+            }
+          }
+        });
+        d3.select(minNode).remove();
+        min = rootGroup.append(() => minNode);
+
+        let rootElems = rootGroup.selectAll('rect.item').size(),
+            iteration = rootElems / VALUE_GROUP_SIZE;
+        const stride = (windows, max) => {
+          let width = rootElems * BAR_WIDTH_NARROW + INTERGROUP_PADDING;
+          for (let i = 0; i < max; i += 1) {
+            let size = d3.select(windows[i]).datum().values.length;
+            width += size * BAR_WIDTH_NARROW + INTERGROUP_PADDING;
+          }
+          return width;
+        };
+
+        let t = svg.transition().duration(50);
+        min.transition(t)
+          .attr('x', (rootElems - 1) * BAR_WIDTH_NARROW);
+        svg.selectAll('g.window')
+          .each(function(_, i, groups) {
+            let base = stride(groups, i);
+            d3.select(this).selectAll('rect.item')
+              .transition(t)
+                .attr('x', (_, i) => base + i * BAR_WIDTH_NARROW);
+          });
+
+        return t.end()
+          .then(() => sleep(50))
+          .then(() => {
+            if (rootGroup.selectAll('rect.item').size() < VALUE_COUNT) {
+              return mergeElements();
+            }
+          });
+      };
+      return mergeElements();
+    })
+    .then(() =>
+      svg.select('g.window--root').selectAll('rect.item')
+        .sort((a, b) => a.value - b.value)
+        .transition().duration(500)
+          .attr('width', BAR_WIDTH_LARGE)
+          .attr('x', (_, i) => BAR_WIDTH_LARGE * i)
+        .end());
+</script>

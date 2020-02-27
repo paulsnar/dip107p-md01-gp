@@ -48,6 +48,7 @@ public class Runner {
   }
 
   private Random random = new Random();
+  private boolean force = false;
   private void benchmarkArrays(Sorter[] sorters, int size) {
     int[] data = new int[size];
     for (int i = 0; i < size; i += 1) {
@@ -78,7 +79,7 @@ public class Runner {
 
     for (Sorter sorter : sorters) {
       String name = sorterNames.get(sorter);
-      if (sorter instanceof QuadraticSort && size > 100_000) {
+      if (sorter instanceof QuadraticSort && size > 100_000 && ! force) {
         // this becomes untenable :)
         continue;
       }
@@ -182,6 +183,7 @@ public class Runner {
       this.sorterNames.put(sorter, sorterName);
     }
 
+    force = true;
     printCsvHeader();
     for (int size : ARRAY_SIZES) {
       benchmarkArrays(sorters, size);
